@@ -7,12 +7,6 @@ Playable online at: **https://madanasnake.github.io/wispcraft/**
 This build of **Eaglercraft 26.2 (Wasm-GC + Wispcraft)** keeps the core game, assets, and multiplayer/proxy features untouched while optimizing startup speed, chunk handling, and frame pacing.
 
 ---
-  Credits & Note
-Eaglercraft 26.2 by lax1dude and the Eaglercraft team.
-Wispcraft (Epoxy / Wisp proxy integration) by Mercury Workshop.
-
-Note: This repository only hosts a shell/loader optimization of the single-file HTML build—all core game binaries, assets, and proxy technology belong to their original creators.
----
 
 ## What Was Optimized
 
@@ -37,3 +31,11 @@ You can still override defaults anytime via URL parameters:
 - `?chunkunload=uncapped` — Disable the chunk-unload cap
 - `?meshworkers=auto` or `?meshworkers=1..4` — Change mesh worker thread count
 - `?device=desktop-low` — Cap pixel ratio to `1.0` for extra FPS on HiDPI screens
+
+---
+
+Credits & Note
+Eaglercraft 26.2 by lax1dude and the Eaglercraft team.
+Wispcraft (Epoxy / Wisp proxy integration) by Mercury Workshop.
+
+Note: This repository only hosts a shell/loader optimization of the single-file HTML build—all core game binaries, assets, and proxy technology belong to their original creators.
