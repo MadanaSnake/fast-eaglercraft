@@ -22,7 +22,7 @@ This build of **Eaglercraft 26.2 (Wasm-GC + Wispcraft)** keeps the core game, as
 - **Chunk & Worker Tuning (Baked Defaults):**
   - `chunkUnloadHardCap = true` by default *(override with `?chunkunload=uncapped`)*.
   - `meshWorkerCount = 2` by default *(override with `?meshworkers=1..4` or `?meshworkers=auto`)*.
-- Seperate task
+- **Seperate task**
   - As you can see on top, 1 HTML of Eaglercraft 26.2 is split up, each file has their own thing (like `sounds.epk` for sfx/music) for faster loading time. If your loading time is somehow slow, blame your ISP or you having bad internet.
 
 ---
@@ -56,4 +56,5 @@ I would recommended to try this fork (even tho there is no sign of forking in th
 
 <a href="https://eaglercraft.com" target="_blank">Eaglercraft</a> 26.2 by [lax1dude](https://github.com/lax1dude) and the <a href="https://eaglercraft.com" target="_blank">Eaglercraft</a> team.
 <a href="https://github.com/MercuryWorkshop/wispcraft" target="_blank">Wispcraft</a> (Epoxy / Wisp proxy integration) by Mercury Workshop.
+
 Note: This repository only hosts a shell/loader optimization of the single-file HTML build—all core game binaries, assets, and proxy technology belong to their original creators.
