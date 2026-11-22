@@ -22,6 +22,8 @@ This build of **Eaglercraft 26.2 (Wasm-GC + Wispcraft)** keeps the core game, as
 - **Chunk & Worker Tuning (Baked Defaults):**
   - `chunkUnloadHardCap = true` by default *(override with `?chunkunload=uncapped`)*.
   - `meshWorkerCount = 2` by default *(override with `?meshworkers=1..4` or `?meshworkers=auto`)*.
+- Seperate task
+  - As you can see on top, 1 HTML of Eaglercraft 26.2 is split up, each file has their own thing (like `sounds.epk` for sfx/music) for faster loading time. If your loading time is somehow slow, blame your ISP or you having bad internet.
 
 ---
 
@@ -32,25 +34,26 @@ You can still override defaults anytime via URL parameters:
 - `?meshworkers=auto` or `?meshworkers=1..4` — Change mesh worker thread count
 - `?device=desktop-low` — Cap pixel ratio to `1.0` for extra FPS on HiDPI screens
 
-## Seperate task
-
-As you can see on top, 1 HTML of Eaglercraft 26.2 is split up, each file has their own thing (like `sounds.epk` for sfx/music) for faster loading time. If your loading time is somehow slow, blame your ISP or you having bad internet.
+---
 
 ## Overall review
 
-I would recommended to try this fork (even tho there is no sign of forking in this repo) because how efficient the ram takes, how faster loading time is (similar loading time), how good it is for future improvement and anything else....
-
-## Modding
-
-Oh i forgor tis one, i make several mods for Eaglercraft since they implement internal modding using Lua, its pretty easy to understand but my brainded still using AI to do that (best programming langugage is English). But haven't release it yet so just wait....
-
-Mod repo link: [under da cunstroction](about:blank)
+I would recommended to try this fork (even tho there is no sign of forking in this repo) because how efficient the ram takes, how faster loading time is (similar loading time), how good it is for future improvement and anything else.... 
 
 ---
+
+## Upcoming next
+
+- **Modding**
+  - Oh i forgor tis one, i make several mods for Eaglercraft since they implement internal modding using Lua, its pretty easy to understand but my brainded head still using AI to do that (best programming langugage is English). But haven't release it yet so just wait....
+  - Mod repo link: [under da cunstroction](youtube.com)
+- **Compare the peformance**
+  - Upcoming video next, i had the file but my days, week, months, and year is full of other thing such as eating, showering, go to school, play battle cats, go to home, eat, sleep, repeat (okay did i just talk abt my self?)
+
+--- 
 
 ## Credits & Note
 
 <a href="https://eaglercraft.com" target="_blank">Eaglercraft</a> 26.2 by [lax1dude](https://github.com/lax1dude) and the <a href="https://eaglercraft.com" target="_blank">Eaglercraft</a> team.
 <a href="https://github.com/MercuryWorkshop/wispcraft" target="_blank">Wispcraft</a> (Epoxy / Wisp proxy integration) by Mercury Workshop.
-
 Note: This repository only hosts a shell/loader optimization of the single-file HTML build—all core game binaries, assets, and proxy technology belong to their original creators.
