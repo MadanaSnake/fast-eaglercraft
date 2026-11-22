@@ -1,4 +1,4 @@
-# WispCraft — Optimized Eaglercraft 26.2
+# Fast-Eaglercraft — Optimized Eaglercraft 26.2
 
 > **Info:** Optimized entirely by AI *(yes, I vibecoded it :[ )*
 
