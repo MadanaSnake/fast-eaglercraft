@@ -34,8 +34,8 @@ You can still override defaults anytime via URL parameters:
 
 ---
 
-Credits & Note
-Eaglercraft 26.2 by lax1dude and the Eaglercraft team.
-Wispcraft (Epoxy / Wisp proxy integration) by Mercury Workshop.
+## Credits & Note
+<a href="https://eaglercraft.com" target="_blank">Eaglercraft</a> 26.2 by lax1dude and the <a href="https://eaglercraft.com" target="_blank">Eaglercraft</a> team.
+<a href="https://github.com/MercuryWorkshop/wispcraft" target="_blank">Wispcraft</a> (Epoxy / Wisp proxy integration) by Mercury Workshop.
 
 Note: This repository only hosts a shell/loader optimization of the single-file HTML build—all core game binaries, assets, and proxy technology belong to their original creators.
