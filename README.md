@@ -2,7 +2,7 @@
 
 > **Info:** Optimized entirely by AI *(yes, I vibecoded it :[ )*
 
-Playable online at: **https://madanasnake.github.io/wispcraft/**
+Playable online at: **[https://madanasnake.github.io/wispcraft/](https://madanasnake.github.io/fast-eaglercraft/)**
 
 This build of **Eaglercraft 26.2 (Wasm-GC + Wispcraft)** keeps the core game, assets, and multiplayer/proxy features untouched while optimizing startup speed, chunk handling, and frame pacing.
 
