@@ -131,6 +131,9 @@
       <input type="checkbox" id="touch-mode" />
       <span>Touch mode</span>
     </label>
+    <p id="touch-note" style="display:none;margin-top:8px;font-size:0.78rem;color:#fbbf24;line-height:1.35;">
+      Note: Turn off "Touch Mode" in Options &gt; Control &gt; Touch Mode if you don't want double control.
+    </p>
 
     <div class="divider"></div>
 
@@ -162,9 +165,15 @@
     modsLink.href = MODS_URL;
 
     // Remember touch mode preference
+    const touchNote = document.getElementById("touch-note");
+    function syncTouchNote() {
+      touchNote.style.display = touchBox.checked ? "block" : "none";
+    }
     touchBox.checked = localStorage.getItem("fast_eagler_touch_mode") === "1";
+    syncTouchNote();
     touchBox.addEventListener("change", () => {
       localStorage.setItem("fast_eagler_touch_mode", touchBox.checked ? "1" : "0");
+      syncTouchNote();
     });
 
     playBtn.addEventListener("click", () => {
