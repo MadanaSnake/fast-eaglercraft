@@ -10,9 +10,9 @@ Playable online at: **[https://madanasnake.github.io/fast-eaglercraft/](https://
 
 This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets, and multiplayer/proxy features untouched while optimizing startup speed, chunk handling, and frame pacing.
 
-## New addition or/and Update! 
+## What's new?
 
-Version 26.3 has been enrolled and both version (26.2 & 26.3) is on landing page, you can change between version now!
+Version 26.3 is now live! Both 26.2 and 26.3 are available on the landing page, and you can switch between them anytime.
 
 ---
 
@@ -54,7 +54,7 @@ I would recommended to try this fork (even tho there is no sign of forking in th
 
 - **Modding**
   - Oh i forgor tis one, i make several mods for Eaglercraft since they implement internal modding using Lua, its pretty easy to understand but my brainded head still using AI to do that (best programming langugage is English). But haven't release it yet so just wait....
-  - Mod repo link: [under da cunstroction](youtube.com)
+  - Mod repo link: [under da cunstroction](https://youtube.com)
 - **Compare the peformance**
   - Upcoming video next, i had the file but my days, week, months, and year is full of other thing such as eating, showering, go to school, play battle cats, go to home, eat, sleep, repeat (okay did i just talk abt my self?)
 
