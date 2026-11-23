@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="128" height="128" src="https://github.com/user-attachments/assets/9df5d3a8-5720-4e3d-9a64-2dd8137b2a14"
+</p>
+  
 # Fast-Eaglercraft — Optimized Eaglercraft
 
 > **Info:** Optimized entirely by AI *(yes, I vibecoded it :[ )*
