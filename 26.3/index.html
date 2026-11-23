@@ -267,16 +267,7 @@ vNCw0YbQuNGP0JjQvdGE0L7RgNC80LDRhtC40Y/QoNC10YHQv9GD0LHQu9C40LrQuNC60L7Qu9C40YfQ
     });
   }
 
-  window.__eagPrepareInlineAssets = function () {
-    var entries = window.eaglercraftXOpts && window.eaglercraftXOpts.assetsURI;
-    if (!Array.isArray(entries)) return;
-    for (var i = 0; i < entries.length; ++i) {
-      var name = String(entries[i].url || "").split("/").pop().split(/[?#]/)[0];
-      var id = payloadIds[name];
-      if (!id) continue;
-      entries[i].url = inlinePayloadPrefix + name;
-    }
-  };
+  window.__eagPrepareInlineAssets = function () {};
 
   window.__eaglerInlinePayloadCacheBytes = 0;
 
