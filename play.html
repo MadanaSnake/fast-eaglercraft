@@ -1378,25 +1378,38 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
 <style>
 #eag-touch-layer{position:fixed;inset:0;z-index:99999;pointer-events:none;user-select:none;-webkit-user-select:none;touch-action:none;display:none;font-family:"Minecraftia","Courier New",monospace}
 #eag-touch-layer.active{display:block}
+#eag-touch-layer.buttons-hidden .eag-t-btn{display:none!important}
 .eag-t-btn{position:fixed;pointer-events:auto;touch-action:none;background:rgba(0,0,0,0.38);color:#ffffff;border:2px solid rgba(255,255,255,0.78);border-radius:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;letter-spacing:0.5px;text-shadow:2px 2px 0 rgba(0,0,0,0.9);box-shadow:inset 0 0 0 1px rgba(0,0,0,0.35);transition:background 0.06s}
 .eag-t-btn.pressed{background:rgba(255,255,255,0.28);border-color:#ffffff}
-.eag-t-btn.toggled{background:rgba(60,180,90,0.45);border-color:#80ff9d}
 #eag-touch-layer.editing .eag-t-btn{border:2px dashed #ffd166;background:rgba(0,0,0,0.62);cursor:move}
 #eag-touch-layer.editing .eag-t-btn.selected{border:2px solid #38bdf8;box-shadow:0 0 0 2px rgba(56,189,248,0.45)}
-#eag-t-bar{position:fixed;top:6px;left:50%;transform:translateX(-50%);display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;pointer-events:auto;z-index:100000;max-width:96vw}
-.eag-t-pill{background:rgba(0,0,0,0.72);color:#fff;border:2px solid rgba(255,255,255,0.75);border-radius:0;padding:5px 10px;font-family:"Minecraftia","Courier New",monospace;font-size:12px;font-weight:700;text-shadow:1px 1px 0 #000;cursor:pointer}
+#eag-t-bar{position:fixed;top:6px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;z-index:100000;max-width:96vw}
+.eag-t-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;pointer-events:auto}
+.eag-t-pill{background:rgba(0,0,0,0.72);color:#fff;border:2px solid rgba(255,255,255,0.75);border-radius:0;padding:5px 10px;min-width:44px;min-height:30px;font-family:"Minecraftia","Courier New",monospace;font-size:12px;font-weight:700;text-shadow:1px 1px 0 #000;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
 .eag-t-pill.editing{background:#ffd166;color:#111;border-color:#fff;text-shadow:none}
+.eag-t-burger{display:flex;flex-direction:column;justify-content:center;gap:3px;width:16px;height:14px}
+.eag-t-burger span{display:block;height:2px;width:100%;background:#fff}
 #eag-t-size-label{color:#fff;background:rgba(0,0,0,0.72);border:2px solid rgba(255,255,255,0.5);padding:5px 8px;font-size:12px;font-weight:700;display:none}
 </style>
 <div id="eag-touch-layer">
   <div id="eag-t-bar">
-    <button id="eag-t-edit" class="eag-t-pill">Edit</button>
-    <button id="eag-t-smaller" class="eag-t-pill" style="display:none">-</button>
-    <span id="eag-t-size-label">100%</span>
-    <button id="eag-t-bigger" class="eag-t-pill" style="display:none">+</button>
-    <button id="eag-t-add" class="eag-t-pill" style="display:none">+ Custom</button>
-    <button id="eag-t-del" class="eag-t-pill" style="display:none">Del</button>
-    <button id="eag-t-reset" class="eag-t-pill" style="display:none">Reset</button>
+    <div class="eag-t-row">
+      <button id="eag-t-menu" class="eag-t-pill" aria-label="Menu" tabindex="-1">
+        <span class="eag-t-burger"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+    <div id="eag-t-sub" class="eag-t-row" style="display:none">
+      <button id="eag-t-hide" class="eag-t-pill" tabindex="-1">Hide</button>
+      <button id="eag-t-edit" class="eag-t-pill" tabindex="-1">Edit</button>
+    </div>
+    <div id="eag-t-editbar" class="eag-t-row" style="display:none">
+      <button id="eag-t-smaller" class="eag-t-pill" tabindex="-1">-</button>
+      <span id="eag-t-size-label">100%</span>
+      <button id="eag-t-bigger" class="eag-t-pill" tabindex="-1">+</button>
+      <button id="eag-t-add" class="eag-t-pill" tabindex="-1">+ Custom</button>
+      <button id="eag-t-del" class="eag-t-pill" style="display:none" tabindex="-1">Del</button>
+      <button id="eag-t-reset" class="eag-t-pill" tabindex="-1">Reset</button>
+    </div>
   </div>
 </div>
 <script>
@@ -1404,9 +1417,13 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   var params = new URLSearchParams(window.location.search);
   if (params.get("touch") !== "custom") return;
 
-  var STORAGE_KEY = "eagler_custom_touch_layout_v2";
+  var STORAGE_KEY = "eagler_extra_touch_layout_v3";
   var layer = document.getElementById("eag-touch-layer");
+  var menuBtn = document.getElementById("eag-t-menu");
+  var subRow = document.getElementById("eag-t-sub");
+  var hideBtn = document.getElementById("eag-t-hide");
   var editBtn = document.getElementById("eag-t-edit");
+  var editBar = document.getElementById("eag-t-editbar");
   var smallerBtn = document.getElementById("eag-t-smaller");
   var biggerBtn = document.getElementById("eag-t-bigger");
   var sizeLabel = document.getElementById("eag-t-size-label");
@@ -1416,19 +1433,11 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   layer.classList.add("active");
 
   var DEFAULTS = {
-    up:     { x: 86,   y: -214, w: 64, h: 64, scale: 1, label: "W",    key: "w", code: "KeyW", keyCode: 87 },
-    down:   { x: 86,   y: -78,  w: 64, h: 64, scale: 1, label: "S",    key: "s", code: "KeyS", keyCode: 83 },
-    left:   { x: 18,   y: -146, w: 64, h: 64, scale: 1, label: "A",    key: "a", code: "KeyA", keyCode: 65 },
-    right:  { x: 154,  y: -146, w: 64, h: 64, scale: 1, label: "D",    key: "d", code: "KeyD", keyCode: 68 },
-    jump:   { x: -90,  y: -118, w: 74, h: 74, scale: 1, label: "JUMP", key: " ", code: "Space", keyCode: 32 },
-    sneak:  { x: -172, y: -88,  w: 70, h: 52, scale: 1, label: "SNEAK",key: "Shift", code: "ShiftLeft", keyCode: 16, toggle: true },
-    attack: { x: -90,  y: -202, w: 74, h: 62, scale: 1, label: "ATK",  mouse: 0 },
-    use:    { x: -172, y: -202, w: 74, h: 62, scale: 1, label: "USE",  mouse: 2 },
-    inv:    { x: -78,  y: 12,   w: 64, h: 40, scale: 1, label: "INV",  key: "e", code: "KeyE", keyCode: 69 },
-    chat:   { x: -148, y: 12,   w: 64, h: 40, scale: 1, label: "CHAT", key: "t", code: "KeyT", keyCode: 84 },
-    f5:     { x: 84,   y: 12,   w: 48, h: 40, scale: 1, label: "F5",   key: "F5", code: "F5", keyCode: 116 },
-    f3:     { x: 138,  y: 12,   w: 48, h: 40, scale: 1, label: "F3",   key: "F3", code: "F3", keyCode: 114 },
-    esc:    { x: 14,   y: 12,   w: 64, h: 40, scale: 1, label: "ESC",  key: "Escape", code: "Escape", keyCode: 27 }
+    esc:  { x: 14,   y: 12, w: 60, h: 40, scale: 1, label: "ESC",  key: "Escape", code: "Escape", keyCode: 27 },
+    f5:   { x: 80,   y: 12, w: 48, h: 40, scale: 1, label: "F5",   key: "F5",     code: "F5",     keyCode: 116 },
+    f3:   { x: 134,  y: 12, w: 48, h: 40, scale: 1, label: "F3",   key: "F3",     code: "F3",     keyCode: 114 },
+    chat: { x: -146, y: 12, w: 62, h: 40, scale: 1, label: "CHAT", key: "t",      code: "KeyT",   keyCode: 84 },
+    inv:  { x: -78,  y: 12, w: 62, h: 40, scale: 1, label: "INV",  key: "e",      code: "KeyE",   keyCode: 69 }
   };
 
   function loadLayout() {
@@ -1455,33 +1464,40 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   }
 
   var layout = loadLayout();
+  var menuOpen = false;
+  var buttonsHidden = false;
   var editMode = false;
-  var selectedId = "jump";
+  var selectedId = "f5";
   var buttons = {};
 
   function getCanvas() {
     return document.querySelector("#game_frame canvas") || document.querySelector("canvas");
   }
 
-  function sendKey(cfg, down) {
-    var target = getCanvas() || document;
-    var ev = new KeyboardEvent(down ? "keydown" : "keyup", {
-      key: cfg.key, code: cfg.code, keyCode: cfg.keyCode, which: cfg.keyCode, bubbles: true, cancelable: true
+  function makeKeyEvent(type, cfg) {
+    var ev = new KeyboardEvent(type, {
+      key: cfg.key,
+      code: cfg.code,
+      keyCode: cfg.keyCode,
+      which: cfg.keyCode,
+      charCode: 0,
+      location: 0,
+      bubbles: true,
+      cancelable: true
     });
-    target.dispatchEvent(ev);
-    window.dispatchEvent(ev);
+    try {
+      Object.defineProperty(ev, "keyCode", { get: function(){ return cfg.keyCode; } });
+      Object.defineProperty(ev, "which", { get: function(){ return cfg.keyCode; } });
+    } catch (e) {}
+    return ev;
   }
 
-  function sendMouse(button, down) {
+  function sendKey(cfg, down) {
+    var type = down ? "keydown" : "keyup";
     var c = getCanvas();
-    if (!c) return;
-    var r = c.getBoundingClientRect();
-    var ev = new MouseEvent(down ? "mousedown" : "mouseup", {
-      button: button, buttons: down ? (button === 2 ? 2 : 1) : 0,
-      clientX: r.left + r.width / 2, clientY: r.top + r.height / 2,
-      bubbles: true, cancelable: true
-    });
-    c.dispatchEvent(ev);
+    if (c) c.dispatchEvent(makeKeyEvent(type, cfg));
+    document.dispatchEvent(makeKeyEvent(type, cfg));
+    window.dispatchEvent(makeKeyEvent(type, cfg));
   }
 
   function applyPos(id) {
@@ -1506,7 +1522,7 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     for (var k in buttons) buttons[k].classList.toggle("selected", k === id);
     if (layout[id]) {
       sizeLabel.textContent = Math.round((layout[id].scale || 1) * 100) + "%";
-      delBtn.style.display = (editMode && layout[id].custom) ? "inline-block" : "none";
+      delBtn.style.display = (editMode && layout[id].custom) ? "inline-flex" : "none";
     }
   }
 
@@ -1531,7 +1547,6 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     applyPos(id);
 
     var dragStart = null;
-    var toggled = false;
 
     el.addEventListener("pointerdown", function(e) {
       e.preventDefault();
@@ -1543,15 +1558,8 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         dragStart = { px: e.clientX, py: e.clientY, ox: rect.left, oy: rect.top };
         return;
       }
-      if (cfg.toggle) {
-        toggled = !toggled;
-        el.classList.toggle("toggled", toggled);
-        sendKey(cfg, toggled);
-      } else {
-        el.classList.add("pressed");
-        if (cfg.mouse !== undefined) sendMouse(cfg.mouse, true);
-        else sendKey(cfg, true);
-      }
+      el.classList.add("pressed");
+      sendKey(cfg, true);
     });
 
     el.addEventListener("pointermove", function(e) {
@@ -1572,11 +1580,8 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         if (dragStart) { dragStart = null; saveLayout(); }
         return;
       }
-      if (!cfg.toggle) {
-        el.classList.remove("pressed");
-        if (cfg.mouse !== undefined) sendMouse(cfg.mouse, false);
-        else sendKey(cfg, false);
-      }
+      el.classList.remove("pressed");
+      sendKey(cfg, false);
     }
     el.addEventListener("pointerup", endPress);
     el.addEventListener("pointercancel", endPress);
@@ -1588,54 +1593,38 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     for (var id in layout) mountButton(id);
   }
 
-  // Camera look by dragging anywhere on the canvas
-  var lookTouchId = null, lastX = 0, lastY = 0;
-  window.addEventListener("touchstart", function(e) {
-    if (editMode) return;
-    if (e.target && e.target.closest && e.target.closest("#eag-touch-layer")) return;
-    if (lookTouchId === null && e.changedTouches.length > 0) {
-      var t = e.changedTouches[0];
-      lookTouchId = t.identifier;
-      lastX = t.clientX; lastY = t.clientY;
+  menuBtn.addEventListener("click", function() {
+    menuOpen = !menuOpen;
+    subRow.style.display = menuOpen ? "flex" : "none";
+    if (!menuOpen && editMode) {
+      editMode = false;
+      layer.classList.remove("editing");
+      editBtn.classList.remove("editing");
+      editBtn.textContent = "Edit";
+      editBar.style.display = "none";
+      sizeLabel.style.display = "none";
+      delBtn.style.display = "none";
     }
-  }, { passive: true });
+  });
 
-  window.addEventListener("touchmove", function(e) {
-    if (editMode || lookTouchId === null) return;
-    for (var i = 0; i < e.changedTouches.length; i++) {
-      var t = e.changedTouches[i];
-      if (t.identifier === lookTouchId) {
-        var dx = (t.clientX - lastX) * 1.6;
-        var dy = (t.clientY - lastY) * 1.6;
-        lastX = t.clientX; lastY = t.clientY;
-        var c = getCanvas();
-        if (c) {
-          c.dispatchEvent(new MouseEvent("mousemove", {
-            movementX: dx, movementY: dy, clientX: t.clientX, clientY: t.clientY, bubbles: true
-          }));
-        }
-        break;
-      }
-    }
-  }, { passive: true });
-
-  window.addEventListener("touchend", function(e) {
-    for (var i = 0; i < e.changedTouches.length; i++) {
-      if (e.changedTouches[i].identifier === lookTouchId) { lookTouchId = null; break; }
-    }
-  }, { passive: true });
+  hideBtn.addEventListener("click", function() {
+    buttonsHidden = !buttonsHidden;
+    layer.classList.toggle("buttons-hidden", buttonsHidden);
+    hideBtn.textContent = buttonsHidden ? "Show" : "Hide";
+  });
 
   editBtn.addEventListener("click", function() {
+    if (buttonsHidden) {
+      buttonsHidden = false;
+      layer.classList.remove("buttons-hidden");
+      hideBtn.textContent = "Hide";
+    }
     editMode = !editMode;
     layer.classList.toggle("editing", editMode);
     editBtn.classList.toggle("editing", editMode);
     editBtn.textContent = editMode ? "Done" : "Edit";
-    var disp = editMode ? "inline-block" : "none";
-    smallerBtn.style.display = disp;
-    biggerBtn.style.display = disp;
-    sizeLabel.style.display = disp;
-    addBtn.style.display = disp;
-    resetBtn.style.display = disp;
+    editBar.style.display = editMode ? "flex" : "none";
+    sizeLabel.style.display = editMode ? "inline-flex" : "none";
     if (editMode) selectButton(selectedId);
     else delBtn.style.display = "none";
   });
@@ -1664,22 +1653,20 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     delete buttons[selectedId];
     delete layout[selectedId];
     saveLayout();
-    selectButton("jump");
+    selectButton("f5");
   });
 
   resetBtn.addEventListener("click", function() {
     layout = JSON.parse(JSON.stringify(DEFAULTS));
     saveLayout();
     rebuildButtons();
-    selectButton("jump");
+    selectButton("f5");
   });
 
   window.addEventListener("resize", function() {
     for (var id in layout) applyPos(id);
   });
 
-
-  // Keep overlay visible in Fullscreen mode by reparenting into fullscreenElement (or #game_frame)
   function syncOverlayParent() {
     var fs = document.fullscreenElement || document.webkitFullscreenElement;
     var host = fs || document.getElementById("game_frame") || document.body;
@@ -1692,7 +1679,6 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   document.addEventListener("webkitfullscreenchange", syncOverlayParent);
   syncOverlayParent();
 
-  // Prevent Android/iOS soft keyboard from popping up when tapping touch buttons
   layer.addEventListener("touchstart", function(e) {
     if (e.target && e.target.closest && e.target.closest(".eag-t-btn")) {
       e.preventDefault();
