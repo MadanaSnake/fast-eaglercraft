@@ -77,10 +77,10 @@ I would recommended to try this fork (even tho there is no sign of forking in th
 
 ## Credits & Note
 
-<a href="https://eaglercraft.com" target="_blank">Eaglercraft</a> 26.2 by [lax1dude](https://github.com/lax1dude) and the <a href="https://eaglercraft.com" target="_blank">Eaglercraft</a> team.
+<a href="https://eaglercraft.com" target="_blank">Eaglercraft</a> by [lax1dude](https://github.com/lax1dude) and the <a href="https://eaglercraft.com" target="_blank">Eaglercraft</a> team.
 <a href="https://github.com/MercuryWorkshop/wispcraft" target="_blank">Wispcraft</a> (Epoxy / Wisp proxy integration) by Mercury Workshop.
 
-Note: This repository only hosts a shell/loader optimization of the single-file HTML build—all core game binaries, assets, and proxy technology belong to their original creators.
+Note: This repository only hosts a shell/loader optimization of the multiple assets of the HTML. Build—all core game binaries, assets, and proxy technology belong to their original creators.
 
 ---
 
