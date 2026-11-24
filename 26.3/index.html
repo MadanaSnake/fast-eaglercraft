@@ -1396,7 +1396,6 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
 #eag-t-size-label{color:#fff;background:rgba(0,0,0,0.72);border:2px solid rgba(255,255,255,0.5);padding:5px 8px;font-size:12px;font-weight:700;display:none}
 </style>
 <div id="eag-touch-layer">
-  <input id="eag-t-kb-input" type="text" disabled autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="position:fixed;top:-100px;left:0;width:1px;height:1px;opacity:0;pointer-events:none" />
   <div id="eag-t-bar">
     <div class="eag-t-row">
       <button id="eag-t-menu" class="eag-t-pill" aria-label="Menu" tabindex="-1">
@@ -1566,19 +1565,7 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         return;
       }
       if (cfg.showKeyboard) {
-        var kb = document.getElementById("eag-t-kb-input");
-        if (kb) {
-          if (!kb.disabled && document.activeElement === kb) {
-            kb.blur();
-            kb.disabled = true;
-            el.classList.remove("pressed");
-          } else {
-            kb.disabled = false;
-            kb.value = "";
-            kb.focus();
-            el.classList.add("pressed");
-          }
-        }
+        toggleVirtualKeyboard();
       } else {
         el.classList.add("pressed");
         sendKey(cfg, true);
@@ -1715,11 +1702,39 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     }
   }, { passive: false });
 
-  var kbInput = document.getElementById("eag-t-kb-input");
-  if (kbInput) {
-    kbInput.addEventListener("input", function() {
-      var val = kbInput.value;
-      kbInput.value = "";
+  var activeKb = null;
+  var kbClosedAt = 0;
+
+  function closeVirtualKeyboard() {
+    kbClosedAt = Date.now();
+    if (activeKb) {
+      var k = activeKb;
+      activeKb = null;
+      k.blur();
+      if (k.parentNode) k.parentNode.removeChild(k);
+    }
+    if (buttons.sk) buttons.sk.classList.remove("pressed");
+  }
+
+  function toggleVirtualKeyboard() {
+    if (activeKb || (Date.now() - kbClosedAt < 350)) {
+      closeVirtualKeyboard();
+      return;
+    }
+    var kb = document.createElement("input");
+    kb.type = "text";
+    kb.autocomplete = "off";
+    kb.autocorrect = "off";
+    kb.autocapitalize = "off";
+    kb.spellcheck = false;
+    kb.style.cssText = "position:fixed;top:-200px;left:0;width:1px;height:1px;opacity:0;pointer-events:none";
+    layer.appendChild(kb);
+    activeKb = kb;
+    if (buttons.sk) buttons.sk.classList.add("pressed");
+
+    kb.addEventListener("input", function() {
+      var val = kb.value;
+      kb.value = "";
       for (var i = 0; i < val.length; i++) {
         var ch = val[i];
         var kc = ch.toUpperCase().charCodeAt(0);
@@ -1729,24 +1744,20 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         sendKey(cfg, false);
       }
     });
-    kbInput.addEventListener("keydown", function(e) {
+    kb.addEventListener("keydown", function(e) {
       if (e.key === "Enter" || e.key === "Backspace") {
         e.preventDefault();
         var kc = e.key === "Enter" ? 13 : 8;
         var cfg = { key: e.key, code: e.key, keyCode: kc };
         sendKey(cfg, true);
         sendKey(cfg, false);
-        if (e.key === "Enter") {
-          kbInput.blur();
-          kbInput.disabled = true;
-          if (buttons.sk) buttons.sk.classList.remove("pressed");
-        }
+        if (e.key === "Enter") closeVirtualKeyboard();
       }
     });
-    kbInput.addEventListener("blur", function() {
-      kbInput.disabled = true;
-      if (buttons.sk) buttons.sk.classList.remove("pressed");
+    kb.addEventListener("blur", function() {
+      closeVirtualKeyboard();
     });
+    kb.focus();
   }
 
   rebuildButtons();
