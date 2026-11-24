@@ -15,7 +15,7 @@ I Personally recommended using version 26.2 for mobile. Its too heavy to run 26.
 ## What's new?
 
 - Version 26.3 is now live! Both 26.2 and 26.3 are available on the landing page, and you can switch between them anytime.
-- Touch mode is added externally because the Eaglercraft version is not customizeable, turn off "Touch Mode" in Settings > Control > Touch Mode
+- Touch mode is added externally because the Eaglercraft version is not customizeable. Dont turn off the "Touch Mode" in Controls setting unless you want to lose control or want to use keyboard & Mouse
 
 ---
 
