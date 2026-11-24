@@ -10,7 +10,7 @@ Playable online at: **[https://madanasnake.github.io/fast-eaglercraft/](https://
 
 This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets, and multiplayer/proxy features untouched while optimizing startup speed, chunk handling, and frame pacing.
 
-I Personally recommended using version 26.2 for mobile. Its too heavy to run 26.3 for your phone unless your phone is absolute beast
+- I Recommended using 26.2 for stability/performance on both of your devices (Desktop & Mobile). 
 
 ## What's new?
 
@@ -33,17 +33,29 @@ I Personally recommended using version 26.2 for mobile. Its too heavy to run 26.
 - **Chunk & Worker Tuning (Baked Defaults):**
   - `chunkUnloadHardCap = true` by default *(override with `?chunkunload=uncapped`)*.
   - `meshWorkerCount = 2` by default *(override with `?meshworkers=1..4` or `?meshworkers=auto`)*.
-- **Seperate task**
-  - As you can see on top, 1 HTML of Eaglercraft 26.2 is split up, each file has their own thing (like `sounds.epk` for sfx/music) for faster loading time. If your loading time is somehow slow, blame your ISP or you having bad internet.
+- **Separate assets**
+  - As you can see on top, 1 HTML of Eaglercraft is split up, each file has their own thing (like `sounds.epk` for sfx/music) for faster loading time. If your loading time is somehow slow, blame your ISP or you having bad internet (if you're using the online version)
 
 ---
 
-## Optional URL Flags
+## Optional Tweak
+
+**URL Flags**
 
 You can still override defaults anytime via URL parameters:
-- `?chunkunload=uncapped` — Disable the chunk-unload cap
-- `?meshworkers=auto` or `?meshworkers=1..4` — Change mesh worker thread count
-- `?device=desktop-low` — Cap pixel ratio to `1.0` for extra FPS on HiDPI screens
+  - `?chunkunload=uncapped` — Disable the chunk-unload cap
+  - `?meshworkers=auto` or `?meshworkers=1..4` — Change mesh worker thread count
+  - `?device=desktop-low` — Cap pixel ratio to `1.0` for extra FPS on HiDPI screens
+
+**Chrome Flags**
+
+By using these flags, it may improve your performance a little bit 
+- `#enable-vulkan` — Enables vulkan as primary renderer (Recommended on Linux)
+- `#default-angle-vulkan` — Set Vulkan ANGLE to be defaulted on your browser (Recommended on Linux)
+- `#vulkan-from-angle` — Makes the browser engine (Skia) share the exact same Vulkan instance with ANGLE (Recommended on linux)
+Note: In Vulkan situation, always check if Vulkan is applied to your browser. Visit `chrome://gpu`
+
+If these flags do something to you, you can reset it by opening Terminal/Command Prompt and type `chrome.exe --no-experiments` or on Linux Terminal `google-chrome --no-experiments` (change `google-chrome` with your default browser like `chromium` or `brave-browser` for example)
 
 ---
 
@@ -69,3 +81,9 @@ I would recommended to try this fork (even tho there is no sign of forking in th
 <a href="https://github.com/MercuryWorkshop/wispcraft" target="_blank">Wispcraft</a> (Epoxy / Wisp proxy integration) by Mercury Workshop.
 
 Note: This repository only hosts a shell/loader optimization of the single-file HTML build—all core game binaries, assets, and proxy technology belong to their original creators.
+
+---
+
+# Why am i making this?
+
+I Wanna get put my Google AI Pro to use. thats it :>
