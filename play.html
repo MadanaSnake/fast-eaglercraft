@@ -1499,6 +1499,20 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     target.dispatchEvent(makeKeyEvent(type, cfg));
   }
 
+  function sendMouse(button, down) {
+    var c = getCanvas();
+    if (!c) return;
+    var r = c.getBoundingClientRect();
+    c.dispatchEvent(new MouseEvent(down ? "mousedown" : "mouseup", {
+      button: button,
+      buttons: down ? (button === 1 ? 4 : (button === 2 ? 2 : 1)) : 0,
+      clientX: r.left + r.width / 2,
+      clientY: r.top + r.height / 2,
+      bubbles: true,
+      cancelable: true
+    }));
+  }
+
   function applyPos(id) {
     var cfg = layout[id], el = buttons[id];
     if (!cfg || !el) return;
@@ -1562,7 +1576,8 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         toggleVirtualKeyboard();
       } else {
         el.classList.add("pressed");
-        sendKey(cfg, true);
+        if (cfg.mouse !== undefined) sendMouse(cfg.mouse, true);
+        else sendKey(cfg, true);
       }
     });
 
@@ -1586,7 +1601,8 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
       }
       if (!cfg.showKeyboard) {
         el.classList.remove("pressed");
-        sendKey(cfg, false);
+        if (cfg.mouse !== undefined) sendMouse(cfg.mouse, false);
+        else sendKey(cfg, false);
       }
     }
     el.addEventListener("pointerup", endPress);
@@ -1641,13 +1657,18 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   addBtn.addEventListener("click", function() {
     var label = prompt("Button label (e.g. M, TAB, 1):");
     if (!label) return;
-    var key = prompt("Key to press (e.g. m, Tab, 1, F1):", label.length === 1 ? label.toLowerCase() : label);
+    var key = prompt("Key or mouse (e.g. m, Tab, 1, middle):", label.length === 1 ? label.toLowerCase() : label);
     if (!key) return;
-    var code = key.length === 1 && /[a-z]/i.test(key) ? ("Key" + key.toUpperCase()) :
-               (key.length === 1 && /[0-9]/.test(key) ? ("Digit" + key) : key);
-    var kc = key.length === 1 ? key.toUpperCase().charCodeAt(0) : (key === "Tab" ? 9 : 0);
     var id = "custom_" + Date.now();
-    layout[id] = { x: 180, y: 80, w: 60, h: 44, scale: 1, label: label.slice(0, 6), key: key, code: code, keyCode: kc, custom: true };
+    var kl = key.trim().toLowerCase();
+    if (kl === "middle" || kl === "mouse1") {
+      layout[id] = { x: 180, y: 80, w: 60, h: 44, scale: 1, label: label.slice(0, 6), mouse: 1, custom: true };
+    } else {
+      var code = key.length === 1 && /[a-z]/i.test(key) ? ("Key" + key.toUpperCase()) :
+                 (key.length === 1 && /[0-9]/.test(key) ? ("Digit" + key) : key);
+      var kc = key.length === 1 ? key.toUpperCase().charCodeAt(0) : (key === "Tab" ? 9 : 0);
+      layout[id] = { x: 180, y: 80, w: 60, h: 44, scale: 1, label: label.slice(0, 6), key: key, code: code, keyCode: kc, custom: true };
+    }
     mountButton(id);
     saveLayout();
     selectButton(id);
