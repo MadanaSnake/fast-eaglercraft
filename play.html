@@ -1392,6 +1392,7 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
 #eag-t-size-label{color:#fff;background:rgba(0,0,0,0.72);border:2px solid rgba(255,255,255,0.5);padding:5px 8px;font-size:12px;font-weight:700;display:none}
 </style>
 <div id="eag-touch-layer">
+  <input id="eag-t-kb-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="position:fixed;top:-100px;left:0;width:1px;height:1px;opacity:0;pointer-events:none" />
   <div id="eag-t-bar">
     <div class="eag-t-row">
       <button id="eag-t-menu" class="eag-t-pill" aria-label="Menu" tabindex="-1">
@@ -1437,7 +1438,8 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     f5:   { x: 80,   y: 12, w: 48, h: 40, scale: 1, label: "F5",   key: "F5",     code: "F5",     keyCode: 116 },
     f3:   { x: 134,  y: 12, w: 48, h: 40, scale: 1, label: "F3",   key: "F3",     code: "F3",     keyCode: 114 },
     chat: { x: -146, y: 12, w: 62, h: 40, scale: 1, label: "CHAT", key: "t",      code: "KeyT",   keyCode: 84 },
-    inv:  { x: -78,  y: 12, w: 62, h: 40, scale: 1, label: "INV",  key: "e",      code: "KeyE",   keyCode: 69 }
+    inv:  { x: -78,  y: 12, w: 62, h: 40, scale: 1, label: "INV",  key: "e",      code: "KeyE",   keyCode: 69 },
+    sk:   { x: -200, y: 12, w: 48, h: 40, scale: 1, label: "SK",   showKeyboard: true }
   };
 
   function loadLayout() {
@@ -1541,6 +1543,7 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     el.className = "eag-t-btn";
     el.setAttribute("tabindex", "-1");
     el.setAttribute("inputmode", "none");
+    if (cfg.showKeyboard) el.setAttribute("data-sk", "1");
     el.textContent = cfg.label;
     buttons[id] = el;
     layer.appendChild(el);
@@ -1559,7 +1562,12 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         return;
       }
       el.classList.add("pressed");
-      sendKey(cfg, true);
+      if (cfg.showKeyboard) {
+        var kb = document.getElementById("eag-t-kb-input");
+        if (kb) { kb.value = ""; kb.focus(); }
+      } else {
+        sendKey(cfg, true);
+      }
     });
 
     el.addEventListener("pointermove", function(e) {
@@ -1581,7 +1589,7 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         return;
       }
       el.classList.remove("pressed");
-      sendKey(cfg, false);
+      if (!cfg.showKeyboard) sendKey(cfg, false);
     }
     el.addEventListener("pointerup", endPress);
     el.addEventListener("pointercancel", endPress);
@@ -1680,7 +1688,8 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   syncOverlayParent();
 
   layer.addEventListener("touchstart", function(e) {
-    if (e.target && e.target.closest && e.target.closest(".eag-t-btn")) {
+    var btn = e.target && e.target.closest && e.target.closest(".eag-t-btn");
+    if (btn && !btn.getAttribute("data-sk")) {
       e.preventDefault();
       if (document.activeElement && document.activeElement !== document.body &&
           (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA")) {
@@ -1688,6 +1697,32 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
       }
     }
   }, { passive: false });
+
+  var kbInput = document.getElementById("eag-t-kb-input");
+  if (kbInput) {
+    kbInput.addEventListener("input", function() {
+      var val = kbInput.value;
+      kbInput.value = "";
+      for (var i = 0; i < val.length; i++) {
+        var ch = val[i];
+        var kc = ch.toUpperCase().charCodeAt(0);
+        var code = /[a-z]/i.test(ch) ? ("Key" + ch.toUpperCase()) : (/[0-9]/.test(ch) ? ("Digit" + ch) : "");
+        var cfg = { key: ch, code: code, keyCode: kc };
+        sendKey(cfg, true);
+        sendKey(cfg, false);
+      }
+    });
+    kbInput.addEventListener("keydown", function(e) {
+      if (e.key === "Enter" || e.key === "Backspace") {
+        e.preventDefault();
+        var kc = e.key === "Enter" ? 13 : 8;
+        var cfg = { key: e.key, code: e.key, keyCode: kc };
+        sendKey(cfg, true);
+        sendKey(cfg, false);
+        if (e.key === "Enter") kbInput.blur();
+      }
+    });
+  }
 
   rebuildButtons();
 })();
