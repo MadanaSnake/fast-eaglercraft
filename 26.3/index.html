@@ -1499,10 +1499,8 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
 
   function sendKey(cfg, down) {
     var type = down ? "keydown" : "keyup";
-    var c = getCanvas();
-    if (c) c.dispatchEvent(makeKeyEvent(type, cfg));
-    document.dispatchEvent(makeKeyEvent(type, cfg));
-    window.dispatchEvent(makeKeyEvent(type, cfg));
+    var target = getCanvas() || document;
+    target.dispatchEvent(makeKeyEvent(type, cfg));
   }
 
   function applyPos(id) {
