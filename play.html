@@ -1392,7 +1392,7 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
 #eag-t-size-label{color:#fff;background:rgba(0,0,0,0.72);border:2px solid rgba(255,255,255,0.5);padding:5px 8px;font-size:12px;font-weight:700;display:none}
 </style>
 <div id="eag-touch-layer">
-  <input id="eag-t-kb-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="position:fixed;top:-100px;left:0;width:1px;height:1px;opacity:0;pointer-events:none" />
+  <input id="eag-t-kb-input" type="text" disabled autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="position:fixed;top:-100px;left:0;width:1px;height:1px;opacity:0;pointer-events:none" />
   <div id="eag-t-bar">
     <div class="eag-t-row">
       <button id="eag-t-menu" class="eag-t-pill" aria-label="Menu" tabindex="-1">
@@ -1561,11 +1561,22 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         dragStart = { px: e.clientX, py: e.clientY, ox: rect.left, oy: rect.top };
         return;
       }
-      el.classList.add("pressed");
       if (cfg.showKeyboard) {
         var kb = document.getElementById("eag-t-kb-input");
-        if (kb) { kb.value = ""; kb.focus(); }
+        if (kb) {
+          if (!kb.disabled && document.activeElement === kb) {
+            kb.blur();
+            kb.disabled = true;
+            el.classList.remove("pressed");
+          } else {
+            kb.disabled = false;
+            kb.value = "";
+            kb.focus();
+            el.classList.add("pressed");
+          }
+        }
       } else {
+        el.classList.add("pressed");
         sendKey(cfg, true);
       }
     });
@@ -1588,8 +1599,10 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         if (dragStart) { dragStart = null; saveLayout(); }
         return;
       }
-      el.classList.remove("pressed");
-      if (!cfg.showKeyboard) sendKey(cfg, false);
+      if (!cfg.showKeyboard) {
+        el.classList.remove("pressed");
+        sendKey(cfg, false);
+      }
     }
     el.addEventListener("pointerup", endPress);
     el.addEventListener("pointercancel", endPress);
@@ -1719,8 +1732,16 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         var cfg = { key: e.key, code: e.key, keyCode: kc };
         sendKey(cfg, true);
         sendKey(cfg, false);
-        if (e.key === "Enter") kbInput.blur();
+        if (e.key === "Enter") {
+          kbInput.blur();
+          kbInput.disabled = true;
+          if (buttons.sk) buttons.sk.classList.remove("pressed");
+        }
       }
+    });
+    kbInput.addEventListener("blur", function() {
+      kbInput.disabled = true;
+      if (buttons.sk) buttons.sk.classList.remove("pressed");
     });
   }
 
