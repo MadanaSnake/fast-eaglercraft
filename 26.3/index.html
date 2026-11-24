@@ -1527,6 +1527,8 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     var cfg = layout[id];
     var el = document.createElement("div");
     el.className = "eag-t-btn";
+    el.setAttribute("tabindex", "-1");
+    el.setAttribute("inputmode", "none");
     el.textContent = cfg.label;
     buttons[id] = el;
     layer.appendChild(el);
@@ -1679,6 +1681,31 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   window.addEventListener("resize", function() {
     for (var id in layout) applyPos(id);
   });
+
+
+  // Keep overlay visible in Fullscreen mode by reparenting into fullscreenElement (or #game_frame)
+  function syncOverlayParent() {
+    var fs = document.fullscreenElement || document.webkitFullscreenElement;
+    var host = fs || document.getElementById("game_frame") || document.body;
+    if (host && layer.parentNode !== host) {
+      host.appendChild(layer);
+    }
+    for (var id in layout) applyPos(id);
+  }
+  document.addEventListener("fullscreenchange", syncOverlayParent);
+  document.addEventListener("webkitfullscreenchange", syncOverlayParent);
+  syncOverlayParent();
+
+  // Prevent Android/iOS soft keyboard from popping up when tapping touch buttons
+  layer.addEventListener("touchstart", function(e) {
+    if (e.target && e.target.closest && e.target.closest(".eag-t-btn")) {
+      e.preventDefault();
+      if (document.activeElement && document.activeElement !== document.body &&
+          (document.activeElement.tagName === "INPUT" || document.activeElement.tagName === "TEXTAREA")) {
+        document.activeElement.blur();
+      }
+    }
+  }, { passive: false });
 
   rebuildButtons();
 })();
