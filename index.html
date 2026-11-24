@@ -16,6 +16,13 @@
       justify-content: center;
       padding: 20px;
     }
+    .layout {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
     .card {
       position: relative;
       width: 100%;
@@ -134,14 +141,16 @@
     .gh-corner:hover { color: #fff; background: rgba(255, 255, 255, 0.12); }
     .key-guide {
       display: none;
-      margin-top: 10px;
+      width: 260px;
       text-align: left;
-      background: rgba(15, 20, 30, 0.85);
+      background: rgba(20, 26, 38, 0.85);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
-      padding: 8px 12px;
-      font-size: 0.78rem;
+      border-radius: 16px;
+      padding: 16px 18px;
+      font-size: 0.8rem;
       color: #cbd5e1;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(10px);
     }
     .key-guide summary {
       cursor: pointer;
@@ -164,6 +173,7 @@
   </style>
 </head>
 <body>
+  <div class="layout">
   <div class="card">
     <a class="gh-corner" href="https://github.com/MadanaSnake/fast-eaglercraft" target="_blank" rel="noopener" aria-label="GitHub Repository" title="GitHub Repository">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -185,24 +195,27 @@
     <p id="touch-note" style="display:none;margin-top:8px;font-size:0.78rem;color:#fbbf24;line-height:1.35;">
       Note: This feature is unstable. Still want it? Turn off "Touch Mode" in Options &gt; Control &gt; Touch Mode if you don't want double control.
     </p>
-    <details id="key-guide" class="key-guide">
-      <summary>Custom Key Names Guide</summary>
-      <ul>
-        <li><code>Escape</code> — Pause / Esc menu</li>
-        <li><code>F3</code> / <code>F5</code> / <code>F1</code> — Debug / Camera / Hide HUD</li>
-        <li><code>Tab</code> — Player list</li>
-        <li><code>t</code> / <code>e</code> / <code>q</code> — Chat / Inventory / Drop</li>
-        <li><code>m</code> — HUD Manager mod</li>
-        <li><code>1</code>–<code>9</code> — Hotbar slots</li>
-        <li><code>Space</code> / <code>Shift</code> — Jump / Sneak</li>
-      </ul>
-    </details>
 
     <div class="divider"></div>
 
     <a id="mods-link" class="mods-btn" href="#" target="_blank" rel="noopener">
       Discover my mods :&gt;
     </a>
+  </div>
+
+  <details id="key-guide" class="key-guide" open>
+    <summary>Custom Key Names Guide</summary>
+    <ul>
+      <li><code>SK</code> — Built-in Show Keyboard button</li>
+      <li><code>Escape</code> — Pause / Esc menu</li>
+      <li><code>F3</code> / <code>F5</code> / <code>F1</code> — Debug / Camera / Hide HUD</li>
+      <li><code>Tab</code> — Player list</li>
+      <li><code>t</code> / <code>e</code> / <code>q</code> — Chat / Inventory / Drop</li>
+      <li><code>m</code> — HUD Manager mod</li>
+      <li><code>1</code>–<code>9</code> — Hotbar slots</li>
+      <li><code>Space</code> / <code>Shift</code> — Jump / Sneak</li>
+    </ul>
+  </details>
   </div>
 
   <script>
