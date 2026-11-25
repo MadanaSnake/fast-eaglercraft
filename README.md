@@ -16,7 +16,7 @@ This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets,
 
 - Version 26.3 is now live! Both 26.2 and 26.3 are available on the landing page, and you can switch between them anytime.
 - Touch mode is added externally because the Eaglercraft version is not customizeable. Dont turn off the "Touch Mode" in Controls setting unless you want to lose control or want to use keyboard & Mouse
-- I Make a bridge to make Eaglercraft can connect Perfectly fine to normal Java Server :D heres the repo link: (2 weeks later)
+- I Make a bridge to make Eaglercraft can connect Perfectly fine to normal Java Server :D. heres the repo link: [https://github.com/MadanaSnake/eaglercraft-bridgetcp](https://github.com/MadanaSnake/eaglercraft-bridgetcp)
 
 ---
 
