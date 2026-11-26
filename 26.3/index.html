@@ -290,7 +290,7 @@ vNCw0YbQuNGP0JjQvdGE0L7RgNC80LDRhtC40Y/QoNC10YHQv9GD0LHQu9C40LrQuNC60L7Qu9C40YfQ
         return new Response(raw, { status: 200, headers: { "Content-Type": "application/wasm" } });
       });
     }
-    if (clean === "terrain.wasm" && (retainedPayloads["eag-inline-terrain-wasm-br"] || document.getElementById("eag-inline-terrain-wasm-br"))) {
+    if (clean === "terrain.wasm" && (retainedPayloads["eag-inline-terrain-wasm-br"] || document.getElementById("eag-inline-terrain-wasm-br") || externalBr["eag-inline-terrain-wasm-br"])) {
       if (!cachedTerrainWasm) {
         cachedTerrainWasm = decodeWorkerWasm("eag-inline-terrain-wasm-br", clean);
       }
