@@ -47,10 +47,11 @@ Each version keeps its build and payloads in its own folder. `play.html` stays a
 | --- | --- |
 | `index.html` | Launcher: version select, touch toggle, key guide |
 | `play.html` | Redirect stub → `26.2/index.html`, keeps `?query` and `#hash` |
-| `26.2/index.html` + `26.2/*` | 26.2 build and its 6 payloads |
-| `26.3/index.html` + `26.3/*` | 26.3 build and its 6 payloads |
+| `sounds.epk` | Shared by both versions (byte-identical, 25.9 MB): one copy, one browser cache entry |
+| `26.2/index.html` + `26.2/*` | 26.2 build and its 5 payloads |
+| `26.3/index.html` + `26.3/*` | 26.3 build and its 5 payloads |
 
-All 12 payloads are byte-identical (SHA-256) to the ones embedded in the optimized single-file builds.
+All 11 payloads are byte-identical (SHA-256) to the ones embedded in the optimized single-file builds. The picker starts on **26.2** (the recommended one); 26.3 stays listed above it.
 
 ---
 

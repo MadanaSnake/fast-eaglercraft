@@ -220,9 +220,10 @@
 
   <script>
     // Edit these URLs anytime to add other versions or your mods repo
+    // recommended: which version the picker starts on (26.2 has the smaller payloads)
     const VERSIONS = [
       { name: "Fast-Eaglercraft 26.3", url: "./26.3/index.html" },
-      { name: "Fast-Eaglercraft 26.2", url: "./26.2/index.html" },
+      { name: "Fast-Eaglercraft 26.2", url: "./26.2/index.html", recommended: true },
     ];
     const MODS_URL = "https://github.com/MadanaSnake";
 
@@ -234,9 +235,12 @@
     VERSIONS.forEach((v, i) => {
       const opt = document.createElement("option");
       opt.value = i;
-      opt.textContent = v.name;
+      opt.textContent = v.recommended ? v.name + " — recommended" : v.name;
       select.appendChild(opt);
     });
+
+    const defaultVersion = VERSIONS.findIndex((v) => v.recommended);
+    select.value = defaultVersion >= 0 ? defaultVersion : 0;
 
     modsLink.href = MODS_URL;
 
