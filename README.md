@@ -106,4 +106,5 @@ Note: This repository only hosts a shell/loader optimization of the multiple ass
 
 # Why am i making this?
 
-~~I Wanna get put my Google AI Pro to use. thats it :>~~ Jio Promotional Google AI Pro is expiring my subscription :(
+~~I Wanna get put my Google AI Pro to use. thats it :>~~ ~~Jio Promotional Google AI Pro is expiring my subscription :(~~
+I found an alternative, its DeepAI :D
