@@ -39,6 +39,21 @@ This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets,
 
 ---
 
+## Repo layout
+
+Each version keeps its build and payloads in its own folder. `play.html` stays at the repo root as a redirect stub, so old `/play.html` links (with their URL flags) keep working.
+
+| Path | What it is |
+| --- | --- |
+| `index.html` | Launcher: version select, touch toggle, key guide |
+| `play.html` | Redirect stub → `26.2/index.html`, keeps `?query` and `#hash` |
+| `26.2/index.html` + `26.2/*` | 26.2 build and its 6 payloads |
+| `26.3/index.html` + `26.3/*` | 26.3 build and its 6 payloads |
+
+All 12 payloads are byte-identical (SHA-256) to the ones embedded in the optimized single-file builds.
+
+---
+
 ## Optional Tweak
 
 **URL Flags**
@@ -46,7 +61,10 @@ This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets,
 You can still override defaults anytime via URL parameters:
   - `?chunkunload=uncapped` — Disable the chunk-unload cap
   - `?meshworkers=auto` or `?meshworkers=1..4` — Change mesh worker thread count
-  - `?device=desktop-low` — Cap pixel ratio to `1.0` for extra FPS on HiDPI screens
+  - `?device=desktop-low` — Cap pixel ratio to `1.0`, one mesh worker, lower memory
+  - `?device=desktop|mobile|mobile-low` — Force a specific device profile
+  - `?touch=custom` — Force the extra on-screen touch overlay (same as the launcher checkbox)
+  - `?client=full|lite` — Force the client module. The lite client is not shipped yet, so `lite` currently falls back to `full`.
 
 **Chrome Flags**
 
@@ -70,7 +88,7 @@ I would recommended to try this fork (even tho there is no sign of forking in th
 
 - **Modding**
   - Oh i forgor tis one, i make several mods for Eaglercraft since they implement internal modding using Lua, its pretty easy to understand but my brainded head still using AI to do that (best programming langugage is English). But haven't release it yet so just wait....
-  - Mod repo link: [under da cunstroction](https://youtube.com)
+  - Mod repo link: coming soon (no link yet)
 - **Compare the peformance**
   - Upcoming video next, i had the file but my days, week, months, and year is full of other thing such as eating, showering, go to school, play battle cats, go to home, eat, sleep, repeat (okay did i just talk abt my self?)
 
