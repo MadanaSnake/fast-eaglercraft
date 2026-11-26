@@ -16,6 +16,7 @@ This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets,
 
 - Version 26.3 is now live! Both 26.2 and 26.3 are available on the landing page, and you can switch between them anytime.
 - Touch mode is added externally because the Eaglercraft version is not customizeable. Dont turn off the "Touch Mode" in Controls setting unless you want to lose control or want to use keyboard & Mouse
+- The touch overlay is now fully adjustable: drag a button to move it, drag its bottom-right corner (or tap **W- / W+ / H- / H+**) to change width and height independently, and nudge the selected button with the arrow keys (hold **Shift** for 10 px). A live `x,y` readout shows while you move it. Each button remembers its own position and size on that device.
 - I Make a bridge to make Eaglercraft can connect Perfectly fine to normal Java Server :D. heres the repo link: [https://github.com/MadanaSnake/eaglercraft-bridgetcp](https://github.com/MadanaSnake/eaglercraft-bridgetcp)
 
 ---
@@ -68,7 +69,7 @@ You can still override defaults anytime via URL parameters:
   - `?meshworkers=auto` or `?meshworkers=1..4` — Change mesh worker thread count
   - `?device=desktop-low` — Cap pixel ratio to `1.0`, one mesh worker, lower memory
   - `?device=desktop|mobile|mobile-low` — Force a specific device profile
-  - `?touch=custom` — Force the extra on-screen touch overlay (same as the launcher checkbox)
+  - `?touch=custom` — Force the extra on-screen touch overlay (same as the launcher checkbox): drag to move, bottom-right corner or W/H pills to resize, arrows to nudge
   - `?client=full|lite` — Force the client module. The lite client is not shipped yet, so `lite` currently falls back to `full`.
 
 **Chrome Flags**

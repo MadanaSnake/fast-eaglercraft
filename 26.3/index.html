@@ -1385,6 +1385,7 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
 .eag-t-btn.pressed{background:rgba(255,255,255,0.28);border-color:#ffffff}
 #eag-touch-layer.editing .eag-t-btn{border:2px dashed #ffd166;background:rgba(0,0,0,0.62);cursor:move}
 #eag-touch-layer.editing .eag-t-btn.selected{border:2px solid #38bdf8;box-shadow:0 0 0 2px rgba(56,189,248,0.45)}
+#eag-touch-layer.editing .eag-t-btn::after{content:"";position:absolute;right:0;bottom:0;width:16px;height:16px;border-left:2px solid #ffd166;border-top:2px solid #ffd166;background:rgba(255,209,102,0.35);pointer-events:none}
 #eag-t-bar{position:fixed;top:6px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;z-index:100000;max-width:96vw}
 .eag-t-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;pointer-events:auto}
 .eag-t-pill{background:rgba(0,0,0,0.72);color:#fff;border:2px solid rgba(255,255,255,0.75);border-radius:0;padding:5px 10px;min-width:44px;min-height:30px;font-family:"Minecraftia","Courier New",monospace;font-size:12px;font-weight:700;text-shadow:1px 1px 0 #000;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
@@ -1408,6 +1409,10 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
       <button id="eag-t-smaller" class="eag-t-pill" tabindex="-1">-</button>
       <span id="eag-t-size-label">100%</span>
       <button id="eag-t-bigger" class="eag-t-pill" tabindex="-1">+</button>
+      <button id="eag-t-w-minus" class="eag-t-pill" tabindex="-1">W-</button>
+      <button id="eag-t-w-plus" class="eag-t-pill" tabindex="-1">W+</button>
+      <button id="eag-t-h-minus" class="eag-t-pill" tabindex="-1">H-</button>
+      <button id="eag-t-h-plus" class="eag-t-pill" tabindex="-1">H+</button>
       <button id="eag-t-add" class="eag-t-pill" tabindex="-1">+ Custom</button>
       <button id="eag-t-del" class="eag-t-pill" style="display:none" tabindex="-1">Del</button>
       <button id="eag-t-reset" class="eag-t-pill" tabindex="-1">Reset</button>
@@ -1428,6 +1433,10 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   var editBar = document.getElementById("eag-t-editbar");
   var smallerBtn = document.getElementById("eag-t-smaller");
   var biggerBtn = document.getElementById("eag-t-bigger");
+  var wMinusBtn = document.getElementById("eag-t-w-minus");
+  var wPlusBtn = document.getElementById("eag-t-w-plus");
+  var hMinusBtn = document.getElementById("eag-t-h-minus");
+  var hPlusBtn = document.getElementById("eag-t-h-plus");
   var sizeLabel = document.getElementById("eag-t-size-label");
   var addBtn = document.getElementById("eag-t-add");
   var delBtn = document.getElementById("eag-t-del");
@@ -1452,6 +1461,10 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
         for (var ck in saved) {
           if (!DEFAULTS[ck] && saved[ck] && saved[ck].custom) out[ck] = saved[ck];
         }
+        for (var mk in out) {
+          if (out[mk].sx === undefined) out[mk].sx = out[mk].scale || 1;
+          if (out[mk].sy === undefined) out[mk].sy = out[mk].scale || 1;
+        }
         return out;
       }
     } catch (e) {}
@@ -1461,7 +1474,7 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   function saveLayout() {
     var data = {};
     for (var k in layout) {
-      data[k] = layout[k].custom ? layout[k] : { x: layout[k].x, y: layout[k].y, scale: layout[k].scale || 1 };
+      data[k] = layout[k].custom ? layout[k] : { x: layout[k].x, y: layout[k].y, sx: layout[k].sx || 1, sy: layout[k].sy || 1 };
     }
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
   }
@@ -1518,9 +1531,9 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   function applyPos(id) {
     var cfg = layout[id], el = buttons[id];
     if (!cfg || !el) return;
-    var s = cfg.scale || 1;
-    var sw = Math.round(cfg.w * s);
-    var sh = Math.round(cfg.h * s);
+    var sx = cfg.sx || 1, sy = cfg.sy || 1;
+    var sw = Math.max(24, Math.round(cfg.w * sx));
+    var sh = Math.max(24, Math.round(cfg.h * sy));
     var left = cfg.x >= 0 ? cfg.x : (window.innerWidth + cfg.x);
     var top  = cfg.y >= 0 ? cfg.y : (window.innerHeight + cfg.y);
     left = Math.max(0, Math.min(window.innerWidth - sw, left));
@@ -1529,24 +1542,40 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     el.style.top  = top + "px";
     el.style.width  = sw + "px";
     el.style.height = sh + "px";
-    el.style.fontSize = Math.round(14 * s) + "px";
+    el.style.fontSize = Math.round(14 * Math.min(sx, sy)) + "px";
+  }
+
+  function sizeText(cfg) {
+    return Math.round((cfg.sx || 1) * 100) + "×" + Math.round((cfg.sy || 1) * 100) + "%";
+  }
+
+  function setSizeLabel(id) {
+    if (layout[id]) sizeLabel.textContent = sizeText(layout[id]);
+  }
+
+  var coordTimer = null;
+  function showCoords(cfg) {
+    sizeLabel.textContent = Math.round(cfg.x) + "," + Math.round(cfg.y);
+    clearTimeout(coordTimer);
+    coordTimer = setTimeout(function () { setSizeLabel(selectedId); }, 900);
   }
 
   function selectButton(id) {
     selectedId = id;
     for (var k in buttons) buttons[k].classList.toggle("selected", k === id);
     if (layout[id]) {
-      sizeLabel.textContent = Math.round((layout[id].scale || 1) * 100) + "%";
+      setSizeLabel(id);
       delBtn.style.display = (editMode && layout[id].custom) ? "inline-flex" : "none";
     }
   }
 
-  function resizeSelected(delta) {
+  function resizeSelected(dx, dy) {
     if (!selectedId || !layout[selectedId]) return;
-    var s = Math.max(0.6, Math.min(2.2, (layout[selectedId].scale || 1) + delta));
-    layout[selectedId].scale = Math.round(s * 10) / 10;
+    var cfg = layout[selectedId];
+    if (dx) cfg.sx = Math.round(Math.max(0.5, Math.min(3, (cfg.sx || 1) + dx)) * 10) / 10;
+    if (dy) cfg.sy = Math.round(Math.max(0.5, Math.min(3, (cfg.sy || 1) + dy)) * 10) / 10;
     applyPos(selectedId);
-    sizeLabel.textContent = Math.round(layout[selectedId].scale * 100) + "%";
+    sizeLabel.textContent = sizeText(cfg);
     saveLayout();
   }
 
@@ -1563,15 +1592,21 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     applyPos(id);
 
     var dragStart = null;
+    var resizeStart = null;
 
     el.addEventListener("pointerdown", function(e) {
       e.preventDefault();
       e.stopPropagation();
-      el.setPointerCapture(e.pointerId);
+      try { el.setPointerCapture(e.pointerId); } catch (err) {}
       if (editMode) {
         selectButton(id);
         var rect = el.getBoundingClientRect();
-        dragStart = { px: e.clientX, py: e.clientY, ox: rect.left, oy: rect.top };
+        var corner = rect.width > 0 && e.clientX > rect.right - 22 && e.clientY > rect.bottom - 22;
+        if (corner) {
+          resizeStart = { px: e.clientX, py: e.clientY, sx: cfg.sx || 1, sy: cfg.sy || 1, w: cfg.w || rect.width, h: cfg.h || rect.height };
+        } else {
+          dragStart = { px: e.clientX, py: e.clientY, ox: rect.left, oy: rect.top };
+        }
         return;
       }
       if (cfg.showKeyboard) {
@@ -1584,21 +1619,34 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     });
 
     el.addEventListener("pointermove", function(e) {
-      if (!editMode || !dragStart) return;
+      if (!editMode) return;
       e.preventDefault();
-      var s = cfg.scale || 1;
-      var sw = Math.round(cfg.w * s), sh = Math.round(cfg.h * s);
+      if (resizeStart) {
+        cfg.sx = Math.round(Math.max(0.5, Math.min(3, resizeStart.sx + (e.clientX - resizeStart.px) / resizeStart.w)) * 10) / 10;
+        cfg.sy = Math.round(Math.max(0.5, Math.min(3, resizeStart.sy + (e.clientY - resizeStart.py) / resizeStart.h)) * 10) / 10;
+        applyPos(id);
+        showCoords(cfg);
+        return;
+      }
+      if (!dragStart) return;
+      var sw = Math.round(cfg.w * (cfg.sx || 1)), sh = Math.round(cfg.h * (cfg.sy || 1));
       var nx = Math.max(0, Math.min(window.innerWidth - sw, dragStart.ox + (e.clientX - dragStart.px)));
       var ny = Math.max(0, Math.min(window.innerHeight - sh, dragStart.oy + (e.clientY - dragStart.py)));
       cfg.x = nx > window.innerWidth / 2 ? (nx - window.innerWidth) : nx;
       cfg.y = ny > window.innerHeight / 2 ? (ny - window.innerHeight) : ny;
       el.style.left = nx + "px";
       el.style.top  = ny + "px";
+      showCoords(cfg);
     });
 
     function endPress() {
       if (editMode) {
-        if (dragStart) { dragStart = null; saveLayout(); }
+        if (dragStart || resizeStart) {
+          dragStart = null;
+          resizeStart = null;
+          saveLayout();
+          setSizeLabel(id);
+        }
         return;
       }
       if (!cfg.showKeyboard) {
@@ -1653,8 +1701,12 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
     else delBtn.style.display = "none";
   });
 
-  smallerBtn.addEventListener("click", function() { resizeSelected(-0.1); });
-  biggerBtn.addEventListener("click", function() { resizeSelected(0.1); });
+  smallerBtn.addEventListener("click", function() { resizeSelected(-0.1, -0.1); });
+  biggerBtn.addEventListener("click", function() { resizeSelected(0.1, 0.1); });
+  wMinusBtn.addEventListener("click", function() { resizeSelected(-0.1, 0); });
+  wPlusBtn.addEventListener("click", function() { resizeSelected(0.1, 0); });
+  hMinusBtn.addEventListener("click", function() { resizeSelected(0, -0.1); });
+  hPlusBtn.addEventListener("click", function() { resizeSelected(0, 0.1); });
 
   addBtn.addEventListener("click", function() {
     var label = prompt("Button label (e.g. M, TAB, 1):");
@@ -1707,6 +1759,23 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   document.addEventListener("fullscreenchange", syncOverlayParent);
   document.addEventListener("webkitfullscreenchange", syncOverlayParent);
   syncOverlayParent();
+
+  document.addEventListener("keydown", function(e) {
+    if (!editMode || !selectedId || !layout[selectedId]) return;
+    var step = e.shiftKey ? 10 : 1;
+    var cfg = layout[selectedId];
+    var moved = false;
+    if (e.key === "ArrowLeft") { cfg.x -= step; moved = true; }
+    else if (e.key === "ArrowRight") { cfg.x += step; moved = true; }
+    else if (e.key === "ArrowUp") { cfg.y -= step; moved = true; }
+    else if (e.key === "ArrowDown") { cfg.y += step; moved = true; }
+    if (!moved) return;
+    e.preventDefault();
+    e.stopPropagation();
+    applyPos(selectedId);
+    showCoords(cfg);
+    saveLayout();
+  }, true);
 
   layer.addEventListener("touchstart", function(e) {
     var btn = e.target && e.target.closest && e.target.closest(".eag-t-btn");
