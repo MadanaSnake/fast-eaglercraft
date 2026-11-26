@@ -8,7 +8,7 @@
 
 Playable online at: **[https://madanasnake.github.io/fast-eaglercraft/](https://madanasnake.github.io/fast-eaglercraft/)**
 
-This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets, and multiplayer/proxy features untouched while optimizing startup speed, chunk handling, and frame pacing.
+This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets, and multiplayer/proxy features untouched. The win is packaging and startup: a smaller page, parallel Brotli decode, deferred proxy init. The game engine itself is unchanged.
 
 - I Recommended using 26.2 for stability/performance on both of your devices (Desktop & Mobile). 
 
@@ -28,19 +28,24 @@ This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets,
   - 4 MB Brotli decompression chunks and parallel short-lived decode workers (`server-worker.wasm` + `terrain.wasm` decompress concurrently).
   - Fast `Uint8Array.fromBase64` / indexed decoding for Epoxy WASM (~1.27M fewer callback calls).
   - Deferred Wispcraft/Epoxy initialization until the title screen is ready (or first network request).
-- **Smoother Frame Pacing & Less Stutter:**
-  - Eliminated periodic 2-second main-thread `localStorage` + `JSON.stringify` crash-journal freezes.
-  - Replaced `new Date().getTime()` with zero-allocation `Date.now` in `TeaVM.wasmGC` (main thread + workers).
-  - Zero-overhead native `WeakRef` shim and self-detaching `AudioContext` unlock listeners.
+- **Measured Effect** *(26.2 vs pristine upstream build `fe8f1237`, headless Chrome + SwiftShader, 5 boots each, localhost, cache disabled)*:
+  - **~1.9 s faster to the first real frame**: 10.9 s vs 12.8 s.
+  - **DOMContentLoaded 0.21 s vs 2.0 s** — the 78.7 MB single HTML is the whole difference.
+  - ~1.1 s less main-thread long-task time before the title screen; worst single stall 3.8 s vs 4.0 s.
+  - Menu frame rate was identical within noise (~32 fps both in software rendering). This is a **loading** win, not a measured FPS win; real-GPU gameplay may differ, but do not expect free frames.
+- **Page-level shims:**
+  - Zero-overhead `WeakRef` wrapper, self-detaching lazy `AudioContext` unlock listeners.
   - WebGL2 `high-performance` GPU hint, `contain: strict` compositor isolation, and splash DOM cleanup after load.
 - **Chunk & Worker Tuning (Baked Defaults):**
+  - These ship in the build (not fork changes); the URL flags below expose them.
   - `chunkUnloadHardCap = true` by default *(override with `?chunkunload=uncapped`)*.
   - `meshWorkerCount = 2` by default *(override with `?meshworkers=1..4` or `?meshworkers=auto`)*
 - **Launcher Performance Menu (26.2 / 26.3 only):**
   - Device profile, mesh-worker count, single-thread mode, chunk-unload cap and verbose diagnostics, plus a one-click **Low-end preset**.
   - Saved per device in `localStorage`; the official 1.8.8 / 1.12.2 builds ignore these flags, so the menu disables itself when they are selected..
 - **Separate assets**
-  - As you can see on top, 1 HTML of Eaglercraft is split up, each file has their own thing (like `sounds.epk` for sfx/music) for faster loading time. If your loading time is somehow slow, blame your ISP or you having bad internet (if you're using the online version)
+  - The single HTML is split up: each payload is its own file (like `sounds.epk` for sfx/music) for faster loading and browser caching.
+  - SHA-256 of every payload matches the upstream build byte for byte — the game, WASM and assets were not modified. If your loading time is somehow slow, blame your ISP or you having bad internet (if you're using the online version)
 
 ---
 
