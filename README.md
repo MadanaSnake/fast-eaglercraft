@@ -50,8 +50,12 @@ Each version keeps its build and payloads in its own folder. `play.html` stays a
 | `sounds.epk` | Shared by both versions (byte-identical, 25.9 MB): one copy, one browser cache entry |
 | `26.2/index.html` + `26.2/*` | 26.2 build and its 5 payloads |
 | `26.3/index.html` + `26.3/*` | 26.3 build and its 5 payloads |
+| `1.12.2/index.html` + `1.12.2/assets.epk` | Official EaglercraftX 1.12.2 WASM-GC build: 12.8 KB page + 17.3 MB payload |
+| `1.8.8/index.html` + `1.8.8/assets.epk` | Official EaglercraftX 1.8.8 WASM-GC build: 13.1 KB page + 12.6 MB payload |
 
 All 11 payloads are byte-identical (SHA-256) to the ones embedded in the optimized single-file builds. The picker starts on **26.2** (the recommended one); 26.3 stays listed above it.
+
+The two official folders are the upstream downloads with their single `EAG$WASM` payload moved next to the page (the page keeps only `assetsURI = "assets.epk?v=<hash>"`). Nothing inside the payload was touched — it is the exact bytes that were base64-encoded in the download. These are unoptimized upstream builds: no fork tuning, no local-bridge support; the optimized versions are 26.2/26.3.
 
 ---
 
