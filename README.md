@@ -55,7 +55,7 @@ Each version keeps its build and payloads in its own folder. `play.html` stays a
 
 All 11 payloads are byte-identical (SHA-256) to the ones embedded in the optimized single-file builds. The picker starts on **26.2** (the recommended one); 26.3 stays listed above it.
 
-The two official folders are the upstream downloads with their single `EAG$WASM` payload moved next to the page (the page keeps only `assetsURI = "assets.epk?v=<hash>"`). Nothing inside the payload was touched — it is the exact bytes that were base64-encoded in the download. These are unoptimized upstream builds: no fork tuning. 1.12.2 is confirmed to connect to the [bridge](https://github.com/MadanaSnake/eaglercraft-bridgetcp) over `wss://` (protocol `340`); 1.8.8 is untested. The optimized versions are 26.2/26.3.
+The two official folders are the upstream downloads with their single `EAG$WASM` payload moved next to the page (the page keeps only `assetsURI = "assets.epk?v=<hash>"`). Nothing inside the payload was touched — it is the exact bytes that were base64-encoded in the download. These are unoptimized upstream builds: no fork tuning. Both connect to the [bridge](https://github.com/MadanaSnake/eaglercraft-bridgetcp) over `wss://`: 1.12.2 with protocol `340`, 1.8.8 with protocol `47` (retry once if the first handshake times out). The optimized versions are 26.2/26.3.
 
 ---
 
