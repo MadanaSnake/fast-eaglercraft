@@ -35,7 +35,10 @@ This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets,
   - WebGL2 `high-performance` GPU hint, `contain: strict` compositor isolation, and splash DOM cleanup after load.
 - **Chunk & Worker Tuning (Baked Defaults):**
   - `chunkUnloadHardCap = true` by default *(override with `?chunkunload=uncapped`)*.
-  - `meshWorkerCount = 2` by default *(override with `?meshworkers=1..4` or `?meshworkers=auto`)*.
+  - `meshWorkerCount = 2` by default *(override with `?meshworkers=1..4` or `?meshworkers=auto`)*
+- **Launcher Performance Menu (26.2 / 26.3 only):**
+  - Device profile, mesh-worker count, single-thread mode, chunk-unload cap and verbose diagnostics, plus a one-click **Low-end preset**.
+  - Saved per device in `localStorage`; the official 1.8.8 / 1.12.2 builds ignore these flags, so the menu disables itself when they are selected..
 - **Separate assets**
   - As you can see on top, 1 HTML of Eaglercraft is split up, each file has their own thing (like `sounds.epk` for sfx/music) for faster loading time. If your loading time is somehow slow, blame your ISP or you having bad internet (if you're using the online version)
 
@@ -47,7 +50,7 @@ Each version keeps its build and payloads in its own folder. `play.html` stays a
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | Launcher: version select, touch toggle, key guide |
+| `index.html` | Launcher: version select, touch toggle, performance menu, key guide |
 | `play.html` | Redirect stub → `26.2/index.html`, keeps `?query` and `#hash` |
 | `sounds.epk` | Shared by both versions (byte-identical, 25.9 MB): one copy, one browser cache entry |
 | `26.2/index.html` + `26.2/*` | 26.2 build and its 5 payloads |
@@ -68,10 +71,14 @@ The two official folders are the upstream downloads with their single `EAG$WASM`
 You can still override defaults anytime via URL parameters:
   - `?chunkunload=uncapped` — Disable the chunk-unload cap
   - `?meshworkers=auto` or `?meshworkers=1..4` — Change mesh worker thread count
+  - `?singlethread` — Disable all workers: lowest memory, slower to load and mesh
+  - `?perfdebug` — Verbose diagnostic logging (long worker stack traces, perf counters)
   - `?device=desktop-low` — Cap pixel ratio to `1.0`, one mesh worker, lower memory
   - `?device=desktop|mobile|mobile-low` — Force a specific device profile
   - `?touch=custom` — Force the extra on-screen touch overlay (same as the launcher checkbox): drag to move, bottom-right corner or W/H pills to resize, arrows to nudge
   - `?client=full|lite` — Force the client module. The lite client is not shipped yet, so `lite` currently falls back to `full`.
+
+The launcher's **Performance** panel writes these for you and remembers the choice per device, so you do not have to hand-edit URLs.
 
 **Chrome Flags**
 
