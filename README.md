@@ -17,6 +17,7 @@ This build of **Eaglercraft (Wasm-GC + Wispcraft)** keeps the core game, assets,
 - Version 26.3 is now live! Both 26.2 and 26.3 are available on the landing page, and you can switch between them anytime.
 - Touch mode is added externally because the Eaglercraft version is not customizeable. Dont turn off the "Touch Mode" in Controls setting unless you want to lose control or want to use keyboard & Mouse
 - The touch overlay is now fully adjustable: drag a button to move it, drag its bottom-right corner (or tap **W- / W+ / H- / H+**) to change width and height independently, and nudge the selected button with the arrow keys (hold **Shift** for 10 px). A live `x,y` readout shows while you move it. Each button remembers its own position and size on that device.
+- Custom buttons understand real key names now: letters, digits, `Tab`, `Enter`, `Space`, `Shift`, `Ctrl`, `Alt`, `Esc`, `F1`-`F5`, plus `Middle` / `Right` click. Unknown names are refused with a message instead of silently doing nothing. The on-screen keyboard button is hidden on devices without a touchscreen, and the overlay no longer disappears if the game goes fullscreen on the canvas itself.
 - I Make a bridge to make Eaglercraft can connect Perfectly fine to normal Java Server :D. heres the repo link: [https://github.com/MadanaSnake/eaglercraft-bridgetcp](https://github.com/MadanaSnake/eaglercraft-bridgetcp)
 
 ---

@@ -1660,7 +1660,10 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   function rebuildButtons() {
     for (var k in buttons) { if (buttons[k] && buttons[k].parentNode) buttons[k].parentNode.removeChild(buttons[k]); }
     buttons = {};
-    for (var id in layout) mountButton(id);
+    for (var id in layout) {
+      if (id === "sk" && navigator.maxTouchPoints === 0 && !layout.sk.custom) continue;
+      mountButton(id);
+    }
   }
 
   menuBtn.addEventListener("click", function() {
@@ -1706,21 +1709,52 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
   hMinusBtn.addEventListener("click", function() { resizeSelected(0, -0.1); });
   hPlusBtn.addEventListener("click", function() { resizeSelected(0, 0.1); });
 
+  var customSeq = 0;
+
+  var KEY_TABLE = {
+    esc: { key: "Escape", code: "Escape", keyCode: 27 },
+    escape: { key: "Escape", code: "Escape", keyCode: 27 },
+    tab: { key: "Tab", code: "Tab", keyCode: 9 },
+    enter: { key: "Enter", code: "Enter", keyCode: 13 },
+    return: { key: "Enter", code: "Enter", keyCode: 13 },
+    space: { key: " ", code: "Space", keyCode: 32 },
+    backspace: { key: "Backspace", code: "Backspace", keyCode: 8 },
+    shift: { key: "Shift", code: "ShiftLeft", keyCode: 16 },
+    ctrl: { key: "Control", code: "ControlLeft", keyCode: 17 },
+    control: { key: "Control", code: "ControlLeft", keyCode: 17 },
+    alt: { key: "Alt", code: "AltLeft", keyCode: 18 },
+    f1: { key: "F1", code: "F1", keyCode: 112 },
+    f2: { key: "F2", code: "F2", keyCode: 113 },
+    f3: { key: "F3", code: "F3", keyCode: 114 },
+    f4: { key: "F4", code: "F4", keyCode: 115 },
+    f5: { key: "F5", code: "F5", keyCode: 116 }
+  };
+
+  function resolveCustomKey(raw) {
+    var kl = String(raw || "").trim().toLowerCase();
+    if (!kl) return null;
+    if (kl === "middle" || kl === "mmb" || kl === "mouse1") return { mouse: 1 };
+    if (kl === "right" || kl === "rmb") return { mouse: 2 };
+    if (KEY_TABLE[kl]) return KEY_TABLE[kl];
+    if (kl.length === 1 && /[a-z]/.test(kl)) return { key: kl, code: "Key" + kl.toUpperCase(), keyCode: kl.toUpperCase().charCodeAt(0) };
+    if (kl.length === 1 && /[0-9]/.test(kl)) return { key: kl, code: "Digit" + kl, keyCode: kl.charCodeAt(0) };
+    return null;
+  }
+
   addBtn.addEventListener("click", function() {
     var label = prompt("Button label (e.g. M, TAB, 1):");
     if (!label) return;
-    var key = prompt("Key or mouse (e.g. m, Tab, 1, middle):", label.length === 1 ? label.toLowerCase() : label);
+    var key = prompt("Key: letter, digit, Tab, Enter, Space, Shift, Ctrl, Alt, Esc, F1-F5, Middle or Right", label.length === 1 ? label.toLowerCase() : label);
     if (!key) return;
-    var id = "custom_" + Date.now();
-    var kl = key.trim().toLowerCase();
-    if (kl === "middle" || kl === "mouse1") {
-      layout[id] = { x: 180, y: 80, w: 60, h: 44, scale: 1, label: label.slice(0, 6), mouse: 1, custom: true };
-    } else {
-      var code = key.length === 1 && /[a-z]/i.test(key) ? ("Key" + key.toUpperCase()) :
-                 (key.length === 1 && /[0-9]/.test(key) ? ("Digit" + key) : key);
-      var kc = key.length === 1 ? key.toUpperCase().charCodeAt(0) : (key === "Tab" ? 9 : 0);
-      layout[id] = { x: 180, y: 80, w: 60, h: 44, scale: 1, label: label.slice(0, 6), key: key, code: code, keyCode: kc, custom: true };
+    var resolved = resolveCustomKey(key);
+    if (!resolved) {
+      alert("Unknown key: " + key + "\nUse a letter, digit, Tab, Enter, Space, Shift, Ctrl, Alt, Esc, F1-F5, Middle or Right.");
+      return;
     }
+    var id = "custom_" + Date.now() + "_" + (++customSeq);
+    var cfg = { x: 180, y: 80, w: 60, h: 44, sx: 1, sy: 1, label: label.slice(0, 6), custom: true };
+    for (var f in resolved) cfg[f] = resolved[f];
+    layout[id] = cfg;
     mountButton(id);
     saveLayout();
     selectButton(id);
@@ -1748,7 +1782,7 @@ var TeaVM=TeaVM||{};TeaVM.wasmGC=TeaVM.wasmGC||(()=>{let n=new Map;let e=null;le
 
   function syncOverlayParent() {
     var fs = document.fullscreenElement || document.webkitFullscreenElement;
-    var host = fs || document.getElementById("game_frame") || document.body;
+    var host = fs ? (fs.tagName === "CANVAS" ? (fs.parentNode || document.body) : fs) : (document.getElementById("game_frame") || document.body);
     if (host && layer.parentNode !== host) {
       host.appendChild(layer);
     }
